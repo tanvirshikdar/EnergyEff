@@ -103,8 +103,6 @@ def lstm_unroll(num_lstm_layer, seq_len, input_size, num_hidden, ...):
             next_state = lstm(num_hidden, hidden, last_states[i], param_cells[i], seqidx, i, dropout=dp)
             hidden = next_state.h
             last_states[i] = next_state
-
-        ...
 ```
 ---
 
@@ -112,19 +110,17 @@ def lstm_unroll(num_lstm_layer, seq_len, input_size, num_hidden, ...):
 
 Use **`EnergyEff.search_plan()`** to compare energy costs before and after optimization.
 
-`# Before optimization`
+```python
+# Before optimization
+old_cost = EnergyEff.get_cost(net, **input_shapes)
 
-`old_cost = EnergyEff.get_cost(net, **input_shapes)`
+# After applying the energy plan
+net_mem_planned = EnergyEff.search_plan(net, **input_shapes)
+new_cost = EnergyEff.get_cost(net_mem_planned, **input_shapes)
 
-`# After applying the energy plan`
-
-`net_mem_planned = EnergyEff.search_plan(net, **input_shapes)`
-
-`new_cost = EnergyEff.get_cost(net_mem_planned, **input_shapes)`
-
-`print('Old energy cost=%d MB' % old_cost)`
-
-`print('New energy cost=%d MB' % new_cost)`
+print('Old energy cost=%d MB' % old_cost)
+print('New energy cost=%d MB' % new_cost)
+```
 
 ---
 
