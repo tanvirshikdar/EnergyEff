@@ -20,7 +20,9 @@ EnergyEff leverages memory optimization techniques while training deep neural ne
 
 **Example:**
 
-`sym._set_attr(mirror_stage='True')`
+```python
+sym._set_attr(mirror_stage='True')
+
 
 3. **Apply Memory Optimization**:
 
