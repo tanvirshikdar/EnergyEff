@@ -1,4 +1,4 @@
-# EnergyEff
+# **EnergyEff**
 
 EnergyEff is a Python script designed to optimize memory for deep neural networks. By optimizing energy usage, this tool enables training more extensive and deeper models with limited resources, making it easier to manage the energy consumption of deep learning models while maintaining high performance.
 
@@ -18,13 +18,10 @@ EnergyEff leverages memory optimization techniques while training deep neural ne
 
    * Mark the computation nodes where memory can be reused by setting the `mirror_stage='True'` attribute. These are the points where computations can be recomputed, saving energy and memory.
 
-Example:
+**Example:**
 
- python  
-CopyEdit  
 `sym._set_attr(mirror_stage='True')`
 
-*   
 3. **Apply Memory Optimization**:
 
    * Call `EnergyEff.search_plan` to generate a **memory-optimized symbolic graph** that uses less energy.
@@ -33,8 +30,6 @@ CopyEdit
 
    * Use the optimized network as usual for training.
 
-python  
-CopyEdit  
 `net_planned = EnergyEff.search_plan(net)`  
 `model = mx.FeedForward(net_planned, ...)`  
 `model.fit(...)`
@@ -54,10 +49,6 @@ You can create your own memory allocator by managing the **mirror stages** in th
 ### **LSTM Cell Symbol:**
 
 This LSTM construction example uses **EnergyEff** to reduce energy consumption by setting **mirror stages**.
-
-python
-
-CopyEdit
 
 `def lstm(num_hidden, indata, prev_state, param, seqidx, layeridx, dropout=0.):`
 
@@ -97,10 +88,6 @@ CopyEdit
 
 ### **Unrolling the LSTM:**
 
-python
-
-CopyEdit
-
 `def lstm_unroll(num_lstm_layer, seq_len, input_size, num_hidden, ...):`
 
     `...`
@@ -126,10 +113,6 @@ CopyEdit
 ## **Energy Optimization Cost Comparison**
 
 Use **`EnergyEff.search_plan()`** to compare energy costs before and after optimization.
-
-python
-
-CopyEdit
 
 `# Before optimization`
 
@@ -158,10 +141,6 @@ Fine-tune energy optimization by adjusting the following parameters:
 * **`threshold`**: Set a memory allocation threshold to find the optimal energy usage plan using **heuristic search**.
 
 ### **Example: ResNet Optimization**
-
-python
-
-CopyEdit
 
 `layers = [3, 24, 36, 3]`
 
@@ -198,4 +177,3 @@ EnergyEff includes a **heuristic search** algorithm to find the best memory and 
 ## **Conclusion**
 
 EnergyEff allows you to significantly reduce the energy consumption of your deep neural networks while maintaining high performance. By intelligently managing memory and reusing computations, you can achieve **energy-efficient deep learning** without compromising model accuracy.
-
