@@ -22,6 +22,7 @@ EnergyEff leverages memory optimization techniques while training deep neural ne
 
 ```python
 sym._set_attr(mirror_stage='True')
+```
 
 
 3. **Apply Memory Optimization**:
