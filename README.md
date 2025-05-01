@@ -55,41 +55,40 @@ You can create your own memory allocator by managing the **mirror stages** in th
 
 This LSTM construction example uses **EnergyEff** to reduce energy consumption by setting **mirror stages**.
 
-`def lstm(num_hidden, indata, prev_state, param, seqidx, layeridx, dropout=0.):`
 
-    `if dropout > 0.:`
+```python
+import mxnet as mx
 
-        `indata = mx.sym.Dropout(data=indata, p=dropout)`
+def lstm(num_hidden, indata, prev_state, param, seqidx, layeridx, dropout=0.):
+    # Apply dropout if needed
+    if dropout > 0.:
+        indata = mx.sym.Dropout(data=indata, p=dropout)
 
-    
+    # LSTM gates and transformations
+    i2h = mx.sym.FullyConnected(data=indata, weight=param.i2h_weight, bias=param.i2h_bias, num_hidden=4 * num_hidden)
+    h2h = mx.sym.FullyConnected(data=prev_state.h, weight=param.h2h_weight, bias=param.h2h_bias, num_hidden=4 * num_hidden)
 
-    `# LSTM gates and transformations`
+    # Gates computation and activation
+    gates = i2h + h2h
+    slice_gates = mx.sym.SliceChannel(gates, num_outputs=4, axis=1, squeeze_axis=1)  # 4 gates: input, forget, output, cell
 
-    `i2h = mx.sym.FullyConnected(data=indata, weight=param.i2h_weight, ...)`
+    input_gate = mx.sym.sigmoid(slice_gates[0])
+    forget_gate = mx.sym.sigmoid(slice_gates[1])
+    output_gate = mx.sym.sigmoid(slice_gates[2])
+    candidate_cell = mx.sym.tanh(slice_gates[3])
 
-    `h2h = mx.sym.FullyConnected(data=prev_state.h, weight=param.h2h_weight, ...)`
+    # Next cell state and hidden state
+    next_c = forget_gate * prev_state.c + input_gate * candidate_cell
+    next_h = output_gate * mx.sym.tanh(next_c)
 
-    
+    # Setting mirror stage for memory optimization
+    next_c._set_attr(mirror_stage=str(seqidx))
+    next_h._set_attr(mirror_stage=str(seqidx))
 
-    `# Gates computation and activation`
+    # Returning LSTM state
+    return mx.rnn.LSTMState(c=next_c, h=next_h)
+```
 
-    `gates = i2h + h2h`
-
-    `slice_gates = mx.sym.SliceChannel(gates, num_outputs=4, ...)`
-
-    `...`
-
-    
-
-    `# Setting mirror stage for memory optimization`
-
-    `next_c._set_attr(mirror_stage=str(seqidx))`
-
-    `next_h._set_attr(mirror_stage=str(seqidx))`
-
-    
-
-    `return LSTMState(c=next_c, h=next_h)`
 
 ### **Unrolling the LSTM:**
 
