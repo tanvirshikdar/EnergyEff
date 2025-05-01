@@ -92,26 +92,20 @@ def lstm(num_hidden, indata, prev_state, param, seqidx, layeridx, dropout=0.):
 
 ### **Unrolling the LSTM:**
 
-`def lstm_unroll(num_lstm_layer, seq_len, input_size, num_hidden, ...):`
+```python
+def lstm_unroll(num_lstm_layer, seq_len, input_size, num_hidden, ...):
 
-    `...`
+    # Applying LSTM and decoder with energy optimization
+    for seqidx in range(seq_len):
+        ...
 
-    `# Applying LSTM and decoder with energy optimization`
+        for i in range(num_lstm_layer):
+            next_state = lstm(num_hidden, hidden, last_states[i], param_cells[i], seqidx, i, dropout=dp)
+            hidden = next_state.h
+            last_states[i] = next_state
 
-    `for seqidx in range(seq_len):`
-
-        `...`
-
-        `for i in range(num_lstm_layer):`
-
-            `next_state = lstm(num_hidden, hidden, last_states[i], param_cells[i], seqidx, i, dropout=dp)`
-
-            `hidden = next_state.h`
-
-            `last_states[i] = next_state`
-
-        `...`
-
+        ...
+```
 ---
 
 ## **Energy Optimization Cost Comparison**
