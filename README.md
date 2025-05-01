@@ -33,9 +33,11 @@ sym._set_attr(mirror_stage='True')
 
    * Use the optimized network as usual for training.
 
-`net_planned = EnergyEff.search_plan(net)`  
-`model = mx.FeedForward(net_planned, ...)`  
-`model.fit(...)`
+```python
+net_planned = EnergyEff.search_plan(net)
+model = mx.FeedForward(net_planned, ...)
+model.fit(...)
+```
 
 ## **Writing Your Own Energy Optimizer**
 
