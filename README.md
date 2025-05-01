@@ -136,26 +136,28 @@ Fine-tune energy optimization by adjusting the following parameters:
 
 ### **Example: ResNet Optimization**
 
-`layers = [3, 24, 36, 3]`
+```python
+# Define the network layers and batch size
+layers = [3, 24, 36, 3]
+batch_size = 32
 
-`batch_size = 32`
+# Get the network symbol
+net = get_symbol(layers)
 
-`net = get_symbol(layers)`
+# Set input data shape (batch size, channels, height, width)
+dshape = (batch_size, 3, 224, 224)
 
-`dshape = (batch_size, 3, 224, 224)`
+# Apply energy optimization
+net_mem_planned = EnergyEff.search_plan(net, data=dshape)
 
-`# Apply energy optimization`
+# Calculate old and new energy costs
+old_cost = EnergyEff.get_cost(net, data=dshape)
+new_cost = EnergyEff.get_cost(net_mem_planned, data=dshape)
 
-`net_mem_planned = EnergyEff.search_plan(net, data=dshape)`
-
-`old_cost = EnergyEff.get_cost(net, data=dshape)`
-
-`new_cost = EnergyEff.get_cost(net_mem_planned, data=dshape)`
-
-`print('Old energy cost=%d MB' % old_cost)`
-
-`print('New energy cost=%d MB' % new_cost)`
-
+# Output the energy costs before and after optimization
+print(f'Old energy cost={old_cost} MB')
+print(f'New energy cost={new_cost} MB')
+```
 ---
 
 ## **Energy Planning and Heuristic Search**
